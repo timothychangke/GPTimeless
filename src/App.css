@@ -1,4 +1,8 @@
 /* Header */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 
 *{
   font-family: Optima, sans-serif;
@@ -35,7 +39,7 @@ html, body {
 }
 
 /* Button */
-
+/* 
 .translate{
   display:flex;
   flex-direction: column;
@@ -80,7 +84,7 @@ button {
   width:60%;
   align-items: center;
   justify-content: space-evenly;
-}
+} */
 
 /* Select Box */
 
@@ -118,5 +122,5 @@ textarea {
 
 .transcript-text{
   border:none;
-}
+} 
 

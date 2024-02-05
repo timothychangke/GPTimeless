@@ -1,14 +1,16 @@
 import './App.css';
-import Header from './header';
-import Chatting from './chatting';
+import Header from './pages/header';
+import Chatting from './pages/chatting';
+import Homepage from './pages/Homepage';
 
 
 
 function App() {
   return (
     <div>
-      <Header/>
-      <Chatting/>
+      {/* <Header/>
+      <Chatting/> */}
+      <Homepage />
     </div>
   );
 }

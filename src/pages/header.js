@@ -1,4 +1,4 @@
-import "./App.css";
+import "../App.css";
 
 function handleHeaderClick() {
   const header = document.getElementById("myHeader");
