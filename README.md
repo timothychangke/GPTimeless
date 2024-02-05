@@ -12,8 +12,6 @@ We believe in leveraging cutting-edge technologies to create **positive social i
 ## Key Features:
 Voice Interaction: Elderly users can communicate with the program using their voice, making it accessible and user-friendly.
 
-Translation: Our program translates the user's voice commands into English before processing them, ensuring seamless communication with ChatGPT.
-
 Sentiment Analysis: Our program can accurately analyze elderlies' conversations throughout to catch any negative/dangerous sentiments.
 
 Medical Assistance: Integration with Med7 ensures that the prgoram can understand and provide relevant information to medical personnel when necessary.
