@@ -7,7 +7,7 @@ import Button from '../components/Button';
 import logo from '../img/chatgpt_logo.png';
 import { useEffect } from 'react';
 import axios from 'axios';
-import Language from '../components/Languages';
+import { useSpeechSynthesis } from 'react-speech-kit';
 
 
 var prompt = `You: Did you sleep well last night?\nFriend: Yes I did! Did you sleep well last night?\nYou:`;
@@ -18,7 +18,8 @@ output_audio.pitch = 1.2;
 
 export default function Homepage() {
 
-    /* Chat-GPT api process.env.REACT_APP_API */
+    const { speak } = useSpeechSynthesis();
+
     const { Configuration, OpenAIApi } = require('openai');
     const configuration = new Configuration({
         apiKey: process.env.REACT_APP_API,
@@ -99,6 +100,7 @@ export default function Homepage() {
             });
             const assistantResponse = response['data']['choices'][0]['message']['content'];
             setgptresponse(assistantResponse);
+            speak({ text: assistantResponse })
             settranslated([...translatedtranscript, {'role': 'assistant', 'content' :assistantResponse}]);
 
         } catch (error) {
@@ -112,7 +114,6 @@ export default function Homepage() {
 
         if (listening) {
             SpeechRecognition.stopListening();
-
             sentimentanalysis(transcript);
             medicalanalysis(transcript);
 
