@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "aws-sdk": "^2.1333.0",
     "creatomate": "^1.0.4",
+    "dotenv": "^16.4.1",
     "file-saver": "^2.0.5",
     "fs": "^0.0.1-security",
     "latest-version": "^7.0.0",
