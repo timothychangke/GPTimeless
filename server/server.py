@@ -3,6 +3,14 @@ import datetime
 from transformers import pipeline
 import spacy
 import requests
+import firebase_admin
+from firebase_admin import credentials, firestore, initialize_app
+
+# Initialize Firestore DB
+cred = credentials.Certificate('./firebase_key.json')
+default_app = initialize_app(cred)
+db = firestore.client()
+collection_ref = db.collection('imp_data')
 
 # Models 
 med7 = spacy.load("en_core_med7_trf")
@@ -21,6 +29,8 @@ def get_sentiment():
     for i in res:
         tmp[i['label']] = i['score']
 
+    collection_ref.document('GyGXJgFMhc2jNXSZIUCf').update({'sentiment': tmp})
+
     return tmp
 
 # Route for medical term extractions
@@ -33,6 +43,8 @@ def get_medical():
     for ent in doc.ents:
         if len(ent.text) != 0:
             data_collected[ent.text] = ent.label_
+
+    collection_ref.document('GyGXJgFMhc2jNXSZIUCf').update({'medical': data_collected})
 
     return data_collected 
      
