@@ -148,7 +148,7 @@ export default function Homepage() {
             });
         }
     }
-    function handleclick() {
+    function handleclickLang() {
         if (lang == 'en-US') {
             setLang('zh-CN')
         } else {
@@ -164,7 +164,7 @@ export default function Homepage() {
                         <div className="flex flex-col items-center justify-center text-white h-screen px-2">
                             <div className="flex space-x-1">
                                 <img src={logo} className="max-h-12" />
-                                <button onClick={handleclick}>
+                                <button onClick={handleclickLang}>
                                     <h1 className="text-5xl font-bold mb-50">
                                         {lang == 'en-US' ? 'GPTimeless' : 'GPT无限'}
                                     </h1>
