@@ -96,25 +96,28 @@ export default function Homepage() {
                                 </h1>
                             </div>
                             <div className="buttons">
-                                <Button onClick={handleclick} listening={listening}>
+                                <Button
+                                    onClick={handleclick}
+                                    listening={listening}
+                                >
                                     {listening ? 'Listening...' : 'Talk to me'}
                                 </Button>
                             </div>
-                        </div>
-                        <div className="text-area">
-                            <textarea
-                                className="transcript-text"
-                                placeholder="Conversation will show here"
-                                value={transcript}
-                                rows="5"
-                                cols="50"
-                            ></textarea>
-                            <textarea
-                                placeholder="Translation will show here"
-                                value={translatedtranscript}
-                                rows="8"
-                                cols="50"
-                            ></textarea>
+                            <div className="text-area flex text-gray-800">
+                                <textarea
+                                    className="transcript-text"
+                                    placeholder="Your Conversation"
+                                    value={transcript}
+                                    rows="5"
+                                    cols="40"
+                                ></textarea>
+                                <textarea
+                                    placeholder="Our response"
+                                    value={translatedtranscript}
+                                    rows="5"
+                                    cols="40"
+                                ></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
