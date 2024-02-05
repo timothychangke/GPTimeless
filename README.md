@@ -1,9 +1,13 @@
 ## Description:
-This project aims to bridge the digital divide for elderly individuals by providing them with easy access to ChatGPT through voice interaction while also acting as a virtual caretaker of elderlies. Many elderly individuals may face challenges with typing, which can limit their ability to engage with AI-powered chatbots like ChatGPT. To address this barrier, our Voice-to-Text AI Bot enables elderly users to interact with ChatGPT using only their voice, eliminating the need for navigating to the chatgpt website, typing and using its elder-unfriendly interface. 
+This project aims to bridge the digital divide for elderly individuals by providing them with easy access to ChatGPT through voice interaction while also acting as a virtual caretaker of elderlies. Many elderly individuals may face challenges with typing, which can limit their ability to engage with AI-powered chatbots like ChatGPT. 
+
+To address this barrier, our Voice-to-Text AI Bot enables elderly users to interact with ChatGPT using only their voice, eliminating the need for navigating to the chatgpt website, typing and using its elder-unfriendly interface. 
 
 Additionally, this chatbot is equipped with state of the art artifical intelligence algorithms that help detect negative sentiments throughout the conversation which can then be used to raise an alert to social workers who could take human action and pay more attention to elderlies in need. Medical information provided by elderlies throughout the conversation with our program would also be relayed to the social workers who could make a more informed decision when deciding to help the elderlies out.
 
-This enhanced accessibility for elderly individuals improves their digital inclusion by providing an intuitive and user-friendly interface for interacting with AI technologies. Furthermore, it could provide the medical industry with a reliable automation process that could look out for elderlies with fewer manpower needed. We believe in leveraging cutting-edge technologies to create **positive social impact** and **empower individuals** of all ages to benefit from the advancements in artificial intelligence.
+This enhanced accessibility for elderly individuals improves their digital inclusion by providing an intuitive and user-friendly interface for interacting with AI technologies. Furthermore, it could provide the medical industry with a reliable automation process that could look out for elderlies with fewer manpower needed. 
+
+We believe in leveraging cutting-edge technologies to create **positive social impact** and **empower individuals** of all ages to benefit from the advancements in artificial intelligence.
 
 ## Key Features:
 Voice Interaction: Elderly users can communicate with the program using their voice, making it accessible and user-friendly.
