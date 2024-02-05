@@ -8,7 +8,7 @@ import logo from '../img/chatgpt_logo.png';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { useSpeechSynthesis } from 'react-speech-kit';
-
+import wordByWord from '../utils/wordByWord';
 
 var prompt = `You: Did you sleep well last night?\nFriend: Yes I did! Did you sleep well last night?\nYou:`;
 var response_txt = '';
@@ -17,7 +17,6 @@ output_audio.rate = 0.85;
 output_audio.pitch = 1.2;
 
 export default function Homepage() {
-
     const { speak } = useSpeechSynthesis();
 
     const { Configuration, OpenAIApi } = require('openai');
@@ -26,37 +25,43 @@ export default function Homepage() {
     });
     const openai = new OpenAIApi(configuration);
 
-    const [translatedtranscript, settranslated] = React.useState([{ 'role': 'system', 'content': 'You are a conversational chatbot tasked with talking to elderlies. Keep responses short and simple. Do ask about them and listen to them.' }]);
+    const [translatedtranscript, settranslated] = React.useState([
+        {
+            role: 'system',
+            content:
+                'You are a conversational chatbot tasked with talking to elderlies. Keep responses short and simple. Do ask about them and listen to them.',
+        },
+    ]);
     const [gptresponse, setgptresponse] = React.useState('');
 
     // For sentiment analysis
-    async function sentimentanalysis(text){
-        fetch("/sentiment",{
-            'method':'POST',
-             headers : {
-            'Content-Type':'application/json'
+    async function sentimentanalysis(text) {
+        fetch('/sentiment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
             },
-            body:JSON.stringify(text)
-            }).then((res) =>
-                    res.json().then((data) => {
-                        console.log(data);
-                    })
-                );
+            body: JSON.stringify(text),
+        }).then((res) =>
+            res.json().then((data) => {
+                console.log(data);
+            })
+        );
     }
 
     // For medical entity recognition
-    async function medicalanalysis(text){
-        fetch("/medical",{
-            'method':'POST',
-             headers : {
-            'Content-Type':'application/json'
+    async function medicalanalysis(text) {
+        fetch('/medical', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
             },
-            body:JSON.stringify(text)
-            }).then((res) =>
-                    res.json().then((data) => {
-                        console.log(data);
-                    })
-                );
+            body: JSON.stringify(text),
+        }).then((res) =>
+            res.json().then((data) => {
+                console.log(data);
+            })
+        );
     }
 
     const addtranslation = (translation) => {
@@ -83,26 +88,33 @@ export default function Homepage() {
 
     // Define the function to make the API request
     async function makeAPIRequest(msg) {
-        let res = translatedtranscript
+        let res = translatedtranscript;
         res.push(msg);
-        console.log(res)
+        console.log(res);
         try {
-            let response = await axios.post(API_ENDPOINT, {
-            model: 'gpt-3.5-turbo',
-            messages: translatedtranscript,
-            temperature: 0.3,
-            max_tokens: 50 
-            }, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + process.env.REACT_APP_API
-            }
-            });
-            const assistantResponse = response['data']['choices'][0]['message']['content'];
-            setgptresponse(assistantResponse);
-            speak({ text: assistantResponse })
-            settranslated([...translatedtranscript, {'role': 'assistant', 'content' :assistantResponse}]);
-
+            let response = await axios.post(
+                API_ENDPOINT,
+                {
+                    model: 'gpt-3.5-turbo',
+                    messages: translatedtranscript,
+                    temperature: 0.3,
+                    max_tokens: 50,
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: 'Bearer ' + process.env.REACT_APP_API,
+                    },
+                }
+            );
+            const assistantResponse =
+                response['data']['choices'][0]['message']['content'];
+            wordByWord(assistantResponse, setgptresponse);
+            speak({ text: assistantResponse });
+            settranslated([
+                ...translatedtranscript,
+                { role: 'assistant', content: assistantResponse },
+            ]);
         } catch (error) {
             console.error('Error:', error.message);
         }
@@ -110,41 +122,21 @@ export default function Homepage() {
 
     function handleclick(event) {
         event.preventDefault();
-        
 
         if (listening) {
             SpeechRecognition.stopListening();
             sentimentanalysis(transcript);
             medicalanalysis(transcript);
 
-            settranslated([...translatedtranscript, {'role': 'user', 'content':transcript}]);
+            settranslated([
+                ...translatedtranscript,
+                { role: 'user', content: transcript },
+            ]);
 
-            makeAPIRequest({'role': 'user', 'content':transcript});
+            makeAPIRequest({ role: 'user', content: transcript });
 
             prompt += transcript;
             prompt += '\nFriend: ';
-            /*
-            openai
-                .createCompletion({
-                    model: 'gpt-3.5-turbo',
-                    prompt: prompt,
-                    temperature: 0.7,
-                    max_tokens: 256,
-                    top_p: 1.0,
-                    frequency_penalty: 0.6,
-                    presence_penalty: 0.6,
-                    stop: ['You:'],
-                })
-                .then((response) => {
-                    const tmp = response.data.choices[0].text;
-                    prompt += tmp;
-                    prompt += '\nYou:';
-                    
-                    console.log(tmp);
-                    addtranslation(tmp);
-                    output_audio.text = tmp;
-                    window.speechSynthesis.speak(output_audio);
-                });*/
 
             response_txt = response_txt.concat(translatedtranscript);
         } else {
@@ -156,6 +148,13 @@ export default function Homepage() {
             });
         }
     }
+    function handleclick() {
+        if (lang == 'en-US') {
+            setLang('zh-CN')
+        } else {
+            setLang('en-US')
+        }
+    }
     return (
         <html>
             <head></head>
@@ -165,38 +164,42 @@ export default function Homepage() {
                         <div className="flex flex-col items-center justify-center text-white h-screen px-2">
                             <div className="flex space-x-1">
                                 <img src={logo} className="max-h-12" />
-                                <h1 className="text-5xl font-bold mb-50">
-                                    GPTimeless
-                                </h1>
+                                <button onClick={handleclick}>
+                                    <h1 className="text-5xl font-bold mb-50">
+                                        {lang == 'en-US' ? 'GPTimeless' : 'GPT无限'}
+                                    </h1>
+                                </button>
                             </div>
                             <div className="buttons">
                                 <Button
                                     onClick={handleclick}
                                     listening={listening}
                                 >
-                                    {listening ? 'Listening...' : 'Talk to me'}
+
+                                    {lang == 'en-US' ? (listening ? 'Listening...' : 'Talk to me') : (listening ? '我在听' : '跟我说')}
                                 </Button>
                             </div>
+                            {/* <select value={lang} onChange={changeLanguage}>
+                                <option>Language of your choice</option>
+                                <option value="en-US">English</option>
+                                <option value="zh-CN">Chinese</option>
+                                <option value="ms-MY">Malay</option>
+                            </select> */}
                             <div className="text-area flex text-gray-800">
                                 <textarea
                                     className="transcript-text"
-                                    placeholder="Your Conversation"
+                                    placeholder={lang == 'en-US' ? "Your Conversation" : "你说"}
                                     value={transcript}
                                     rows="5"
                                     cols="40"
                                 ></textarea>
                                 <textarea
-                                    placeholder="Our response"
+                                    placeholder={lang == 'en-US' ? "Our Reply" : "我答"}
                                     value={gptresponse}
                                     rows="5"
                                     cols="40"
                                 ></textarea>
                             </div>
-                            <select value={lang} onChange={changeLanguage}>
-                                <option value="en-US">English</option>
-                                <option value="zh-CN">Chinese</option>
-                                <option value="ms-MY">Malay</option>
-                            </select>
                         </div>
                     </div>
                 </div>
