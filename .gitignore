@@ -25,3 +25,6 @@ yarn-error.log*
 
 # Firebase json file
 firebase_key.json
+
+# Python virtual environment
+python_env
