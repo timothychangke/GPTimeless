@@ -5,7 +5,10 @@ import SpeechRecognition, {
 } from 'react-speech-recognition';
 import Button from '../components/Button';
 import logo from '../img/chatgpt_logo.png';
+import { useEffect } from 'react';
+import axios from 'axios';
 import Language from '../components/Languages';
+
 
 var prompt = `You: Did you sleep well last night?\nFriend: Yes I did! Did you sleep well last night?\nYou:`;
 var response_txt = '';
@@ -14,7 +17,46 @@ output_audio.rate = 0.85;
 output_audio.pitch = 1.2;
 
 export default function Homepage() {
-    const [translatedtranscript, settranslated] = React.useState('');
+
+    /* Chat-GPT api process.env.REACT_APP_API */
+    const { Configuration, OpenAIApi } = require('openai');
+    const configuration = new Configuration({
+        apiKey: process.env.REACT_APP_API,
+    });
+    const openai = new OpenAIApi(configuration);
+
+    const [translatedtranscript, settranslated] = React.useState([{ 'role': 'system', 'content': 'You are a conversational chatbot tasked with talking to elderlies. Keep responses short and simple. Do ask about them and listen to them.' }]);
+    const [gptresponse, setgptresponse] = React.useState('');
+
+    // For sentiment analysis
+    async function sentimentanalysis(text){
+        fetch("/sentiment",{
+            'method':'POST',
+             headers : {
+            'Content-Type':'application/json'
+            },
+            body:JSON.stringify(text)
+            }).then((res) =>
+                    res.json().then((data) => {
+                        console.log(data);
+                    })
+                );
+    }
+
+    // For medical entity recognition
+    async function medicalanalysis(text){
+        fetch("/medical",{
+            'method':'POST',
+             headers : {
+            'Content-Type':'application/json'
+            },
+            body:JSON.stringify(text)
+            }).then((res) =>
+                    res.json().then((data) => {
+                        console.log(data);
+                    })
+                );
+    }
 
     const addtranslation = (translation) => {
         const tmp = translation + '\n\n';
@@ -35,26 +77,55 @@ export default function Homepage() {
         return <span>Browser doesn't support speech recognition.</span>;
     }
 
+    // Define the API endpoint
+    const API_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
+
+    // Define the function to make the API request
+    async function makeAPIRequest(msg) {
+        let res = translatedtranscript
+        res.push(msg);
+        console.log(res)
+        try {
+            let response = await axios.post(API_ENDPOINT, {
+            model: 'gpt-3.5-turbo',
+            messages: translatedtranscript,
+            temperature: 0.3,
+            max_tokens: 50 
+            }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + process.env.REACT_APP_API
+            }
+            });
+            const assistantResponse = response['data']['choices'][0]['message']['content'];
+            setgptresponse(assistantResponse);
+            settranslated([...translatedtranscript, {'role': 'assistant', 'content' :assistantResponse}]);
+
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    }
+
     function handleclick(event) {
         event.preventDefault();
+        
 
         if (listening) {
             SpeechRecognition.stopListening();
 
-            console.log(transcript);
-            /* Chat-GPT api process.env.REACT_APP_API */
-            const { Configuration, OpenAIApi } = require('openai');
-            const configuration = new Configuration({
-                apiKey: process.env.REACT_APP_API,
-            });
-            const openai = new OpenAIApi(configuration);
+            sentimentanalysis(transcript);
+            medicalanalysis(transcript);
+
+            settranslated([...translatedtranscript, {'role': 'user', 'content':transcript}]);
+
+            makeAPIRequest({'role': 'user', 'content':transcript});
 
             prompt += transcript;
             prompt += '\nFriend: ';
-
+            /*
             openai
                 .createCompletion({
-                    model: 'text-davinci-003',
+                    model: 'gpt-3.5-turbo',
                     prompt: prompt,
                     temperature: 0.7,
                     max_tokens: 256,
@@ -67,15 +138,14 @@ export default function Homepage() {
                     const tmp = response.data.choices[0].text;
                     prompt += tmp;
                     prompt += '\nYou:';
+                    
                     console.log(tmp);
                     addtranslation(tmp);
                     output_audio.text = tmp;
                     window.speechSynthesis.speak(output_audio);
-                });
+                });*/
 
             response_txt = response_txt.concat(translatedtranscript);
-
-            console.log(translatedtranscript);
         } else {
             resetTranscript();
             console.log('listening start');
@@ -116,7 +186,7 @@ export default function Homepage() {
                                 ></textarea>
                                 <textarea
                                     placeholder="Our response"
-                                    value={translatedtranscript}
+                                    value={gptresponse}
                                     rows="5"
                                     cols="40"
                                 ></textarea>
