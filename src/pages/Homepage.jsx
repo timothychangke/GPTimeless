@@ -6,8 +6,6 @@ import SpeechRecognition, {
 import Button from '../components/Button';
 import logo from '../img/chatgpt_logo.png';
 import Language from '../components/Languages';
-import translateText from '../components/GoogleTranslate';
-
 
 var prompt = `You: Did you sleep well last night?\nFriend: Yes I did! Did you sleep well last night?\nYou:`;
 var response_txt = '';
@@ -42,6 +40,7 @@ export default function Homepage() {
 
         if (listening) {
             SpeechRecognition.stopListening();
+
             console.log(transcript);
             /* Chat-GPT api process.env.REACT_APP_API */
             const { Configuration, OpenAIApi } = require('openai');
@@ -82,7 +81,7 @@ export default function Homepage() {
             console.log('listening start');
             SpeechRecognition.startListening({
                 continuous: true,
-                language: lang
+                language: lang,
             });
         }
     }
@@ -117,17 +116,15 @@ export default function Homepage() {
                                 ></textarea>
                                 <textarea
                                     placeholder="Our response"
-                                    value={translateText(transcript)}
+                                    value={translatedtranscript}
                                     rows="5"
                                     cols="40"
                                 ></textarea>
                             </div>
-                            <div className=''>
                             <select value={lang} onChange={changeLanguage}>
                                 <option value="en-US">English</option>
                                 <option value="zh-CN">Chinese</option>
                             </select>
-                            </div>
                         </div>
                     </div>
                 </div>
