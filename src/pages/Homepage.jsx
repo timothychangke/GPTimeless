@@ -195,6 +195,7 @@ export default function Homepage() {
                             <select value={lang} onChange={changeLanguage}>
                                 <option value="en-US">English</option>
                                 <option value="zh-CN">Chinese</option>
+                                <option value="ms-MY">Malay</option>
                             </select>
                         </div>
                     </div>
