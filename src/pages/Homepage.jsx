@@ -23,8 +23,10 @@ export default function Homepage() {
     });
     const openai = new OpenAIApi(configuration);
 
-    const [translatedtranscript, settranslated] = React.useState('');
+    const [translatedtranscript, settranslated] = React.useState([{ 'role': 'system', 'content': 'You are a conversational chatbot tasked with talking to elderlies. Keep responses short and simple. Do ask about them and listen to them.' }]);
+    const [gptresponse, setgptresponse] = React.useState('');
 
+    // For sentiment analysis
     async function sentimentanalysis(text){
         fetch("/sentiment",{
             'method':'POST',
@@ -39,6 +41,7 @@ export default function Homepage() {
                 );
     }
 
+    // For medical entity recognition
     async function medicalanalysis(text){
         fetch("/medical",{
             'method':'POST',
@@ -69,37 +72,34 @@ export default function Homepage() {
         return <span>Browser doesn't support speech recognition.</span>;
     }
 
-        // Define the API endpoint
+    // Define the API endpoint
     const API_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
 
     // Define the function to make the API request
-    async function makeAPIRequest() {
-        let messages = [
-            { role: 'system', content: 'You are a helpful assistant.' },
-            { role: 'user', content: 'I am Naveen, I want to learn AI' },
-            { role: 'assistant', content: 'Hello, Naveen. That is awesome! What do you want to know about AI?' },
-            { role: 'user', content: 'What is NLP?' }
-          ];
+    async function makeAPIRequest(msg) {
+        let res = translatedtranscript
+        res.push(msg);
+        console.log(res)
         try {
-            const response = await axios.post(API_ENDPOINT, {
+            let response = await axios.post(API_ENDPOINT, {
             model: 'gpt-3.5-turbo',
-            messages: messages,
-            temperature: 0.7,
+            messages: translatedtranscript,
+            temperature: 0.3,
             max_tokens: 50 
             }, {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.REACT_APP_API}`
+                'Authorization': 'Bearer ' + process.env.REACT_APP_API
             }
             });
-
-            const assistantResponse = response;
-            console.log(assistantResponse);
+            const assistantResponse = response['data']['choices'][0]['message']['content'];
+            setgptresponse(assistantResponse);
+            settranslated([...translatedtranscript, {'role': 'assistant', 'content' :assistantResponse}]);
 
         } catch (error) {
             console.error('Error:', error.message);
         }
-        }
+    }
 
     function handleclick(event) {
         event.preventDefault();
@@ -108,13 +108,16 @@ export default function Homepage() {
         if (listening) {
             SpeechRecognition.stopListening();
 
-            console.log(transcript);
             sentimentanalysis(transcript);
             medicalanalysis(transcript);
 
+            settranslated([...translatedtranscript, {'role': 'user', 'content':transcript}]);
+
+            makeAPIRequest({'role': 'user', 'content':transcript});
+
             prompt += transcript;
             prompt += '\nFriend: ';
-
+            /*
             openai
                 .createCompletion({
                     model: 'gpt-3.5-turbo',
@@ -135,15 +138,12 @@ export default function Homepage() {
                     addtranslation(tmp);
                     output_audio.text = tmp;
                     window.speechSynthesis.speak(output_audio);
-                });
+                });*/
 
             response_txt = response_txt.concat(translatedtranscript);
-
-            console.log(translatedtranscript);
         } else {
             resetTranscript();
             console.log('listening start');
-            console.log("hi");
             SpeechRecognition.startListening({
                 continuous: true,
                 language: 'en-US',
@@ -181,7 +181,7 @@ export default function Homepage() {
                                 ></textarea>
                                 <textarea
                                     placeholder="Our response"
-                                    value={translatedtranscript}
+                                    value={gptresponse}
                                     rows="5"
                                     cols="40"
                                 ></textarea>
