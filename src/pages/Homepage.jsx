@@ -42,7 +42,6 @@ export default function Homepage() {
             SpeechRecognition.stopListening();
 
             console.log(transcript);
-
             /* Chat-GPT api process.env.REACT_APP_API */
             const { Configuration, OpenAIApi } = require('openai');
             const configuration = new Configuration({
