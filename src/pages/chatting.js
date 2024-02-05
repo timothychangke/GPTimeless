@@ -76,7 +76,7 @@ const Chatting = () => {
     else {
       resetTranscript()
       console.log('listening start')
-        SpeechRecognition.startListening({ continuous: true, language: 'en-US' })
+        SpeechRecognition.startListening({ continuous: true, language: 'zh-CN' })
     }
   }
 

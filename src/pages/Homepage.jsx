@@ -1,10 +1,11 @@
 import '../App.css';
-import React from 'react';
+import React, { useState } from 'react';
 import SpeechRecognition, {
     useSpeechRecognition,
 } from 'react-speech-recognition';
 import Button from '../components/Button';
 import logo from '../img/chatgpt_logo.png';
+import Language from '../components/Languages';
 
 var prompt = `You: Did you sleep well last night?\nFriend: Yes I did! Did you sleep well last night?\nYou:`;
 var response_txt = '';
@@ -19,7 +20,10 @@ export default function Homepage() {
         const tmp = translation + '\n\n';
         settranslated((prev) => tmp + prev);
     };
-
+    const [lang, setLang] = React.useState('en-US');
+    function changeLanguage(event) {
+        setLang(event.target.value);
+    }
     const {
         transcript,
         listening,
@@ -78,7 +82,7 @@ export default function Homepage() {
             console.log('listening start');
             SpeechRecognition.startListening({
                 continuous: true,
-                language: 'en-US',
+                language: lang,
             });
         }
     }
@@ -118,6 +122,10 @@ export default function Homepage() {
                                     cols="40"
                                 ></textarea>
                             </div>
+                            <select value={lang} onChange={changeLanguage}>
+                                <option value="en-US">English</option>
+                                <option value="zh-CN">Chinese</option>
+                            </select>
                         </div>
                     </div>
                 </div>
