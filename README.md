@@ -21,9 +21,6 @@ The bot will translate your voice input into English and process it using ChatGP
 You'll receive a spoken response from the bot, thanks to AWS Polly.
 Enjoy seamless communication with ChatGPT .
 
-## Feedback:
-We welcome feedback from users and developers to improve the functionality and usability of the Voice-Text AI Bot. Please feel free to submit any suggestions or report any issues to [Your Contact Information/Email]. Thank you for your support!
-
 ## Files
 
 In the root folder, you can type in `npm start`
