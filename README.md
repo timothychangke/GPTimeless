@@ -54,4 +54,7 @@ Additionally, we also used Med7, a deep learning model that is effective in dete
 * Flask 
 * Firebase
 * OpenAI API - gpt-3.5-turbo
-* Med7 - HuggingFace
+* Distilbert, Med7 - HuggingFace
+
+https://github.com/timothychangke/GPTimeless/assets/77542415/df1f33d9-5b40-4093-8eb9-f90089dcb819
+  
